@@ -1,12 +1,3 @@
-/*
-
-	От себя добавил: 
-	- Еще один экран с счетом и кнопкой "начать сначала"
-	- Функционал, который позволяет начать сначала
-	- Таймер времени теперь может отображать и минуты
-
-*/
-
 const startBtn = document.querySelector('#start')
 const screens = document.querySelectorAll('.screen')
 const timeList = document.querySelector('#time-list')
@@ -14,10 +5,12 @@ const timeEl = document.querySelector('#time')
 const board = document.querySelector('#board')
 const scoreEl = document.querySelector('#score')
 const restartBtn = document.querySelector('#restart-btn')
+const typeList = document.querySelector('#type-list')
 
 let time = 0
 let score = 0
-let timer = null
+let timer
+let gameType
 
 changeScreen(0)
 
@@ -26,12 +19,17 @@ startBtn.addEventListener('click', (e) => {
 	changeScreen(1)
 })
 
-restartBtn.addEventListener('click', restartGame)
+typeList.addEventListener('click', e => {
+	if (e.target.classList.contains('type-btn')) {
+		gameType = e.target.getAttribute('data-time')
+		changeScreen(2)
+	}
+})
 
 timeList.addEventListener('click', e => {
 	if (e.target.classList.contains('time-btn')) {
 		time = parseInt(e.target.getAttribute('data-time'))
-		changeScreen(2)
+		changeScreen(3)
 		startGame()
 	}
 })
@@ -43,6 +41,8 @@ board.addEventListener('click', e => {
 		createRandomCircle()
 	}
 })
+
+restartBtn.addEventListener('click', restartGame)
 
 function startGame() {
 	timer = setInterval(decreaseTime, 1000)

@@ -6,35 +6,48 @@ const TARGET_SIZES = {
 	x: 30,
 	y: 30
 }
-const INTERVAL_TIME = 100
   
 const block = document.querySelector('.block')
-const roadPoints = generateRoadPoints(30)
+let roadPoints = generateRoadPoints(30)
 let targetPos = {
 	x: 0,
 	y: 0
 }
 
 let activePointIndex = 0
+let speed = calcSpeed(targetPos, roadPoints[activePointIndex])
+let animation = requestAnimationFrame(moveBlock)
 
-const speed = calcSpeed(targetPos, roadPoints[activePointIndex])
+let oldTimestamp = 0
 
-console.log(speed)
-
-setInterval(moveBlock, INTERVAL_TIME)
-
-function moveBlock() {
+function moveBlock(timestamp) {
 	const activePoint = roadPoints[activePointIndex]
+	const frameTime = timestamp - oldTimestamp
+	const pxPerFrame = {
+		x: speed.x / 1000 * frameTime,
+		y: speed.y / 1000 * frameTime
+	}
+
+	oldTimestamp = timestamp
+
+	let onPoint = {
+		x: false,
+		y: false
+	}
+
 	let xPos = targetPos.x
 	let yPos = targetPos.y
-	
-	
-	if (targetPos.x !== activePoint.x) {
-		xPos = targetPos.x + speed.x
+
+	if (!numberInRange(activePoint.x - 5, activePoint.x + 5, xPos)) {
+		xPos = targetPos.x + pxPerFrame.x
+	} else {
+		onPoint.x = true
 	}
 	
-	if (targetPos.y !== activePoint.y) {
-		yPos = targetPos.y + speed.y
+	if (!numberInRange(activePoint.y - 5, activePoint.y + 5, yPos)) {
+		yPos = targetPos.y + pxPerFrame.y
+	} else {
+		onPoint.y = true
 	}
 	
 	targetPos = {
@@ -43,31 +56,58 @@ function moveBlock() {
 	}
 	
 	block.style.transform = `translate(${targetPos.x}px, ${targetPos.y}px)`
-  }
+
+	if (onPoint.x && onPoint.y) {
+		activePointIndex++
+		speed = calcSpeed(targetPos, roadPoints[activePointIndex])
+	}
+
+	if (activePointIndex === roadPoints.length - 1) {
+		roadPoints = [...roadPoints, ...generateRoadPoints(30)] 
+	}
+
+	animation = requestAnimationFrame(moveBlock)
+}
   
-  function generateRoadPoints(quantity) {
+function generateRoadPoints(quantity) {
 	let points = []
-	
+
 	for (let i = 0; i < quantity; i++) {
 		points.push({
-			x: getRandomNumber(0, FIELD_SIZES.x - TARGET_SIZES.x),
-			y: getRandomNumber(0, FIELD_SIZES.y - TARGET_SIZES.y)
+			x: getRandomNumber(0, FIELD_SIZES.x - TARGET_SIZES.x, true),
+			y: getRandomNumber(0, FIELD_SIZES.y - TARGET_SIZES.y, true)
 		})
 	}
-	
-	return points
-  }
 
-function calcSpeed(targetPos, point) {
-	let moveY = point.y - targetPos.y
-	let moveX = point.x - targetPos.x
+	return points
+}
+
+function calcSpeed(oldPos, newPos) {	
+	let moveY = newPos.y - oldPos.y
+	let moveX = newPos.x - oldPos.x
+
+	const timeToTargetPoint = getRandomNumber(1.5, 2.5, false)
 
 	return {
-		x: moveX / INTERVAL_TIME,
-		y: moveY / INTERVAL_TIME
+		x: moveX / timeToTargetPoint,
+		y: moveY / timeToTargetPoint 
 	}
 }
   
-function getRandomNumber(min, max) {
-	return Math.round(Math.random() * (max - min) + min)
+function getRandomNumber(min, max, round = true) {
+	const randomNumber = Math.random() * (max - min) + min
+
+	if (round) {
+		return Math.round(randomNumber)
+	} else {
+		return randomNumber
+	}
+}
+
+function numberInRange(min, max, number) {
+	if (number >= min && number <= max) {
+		return true
+	} else {
+		return false
+	}
 }

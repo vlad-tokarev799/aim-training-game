@@ -54,7 +54,7 @@ h1 {
   z-index: 1;
 }
 
-.time-list {
+.btn-list {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -62,11 +62,11 @@ h1 {
   padding: 0;
 }
 
-.time-list li {
+.btn-list li {
   margin: 10px;
 }
 
-.time-btn {
+.btn {
   background-color: transparent;
   border: 2px solid #C0C0C0;
   color: #fff;
@@ -76,7 +76,7 @@ h1 {
   font-size: 1.5rem;
 }
 
-.time-btn:hover {
+.btn:hover {
   border: 2px solid #16D9E3;
   color: #16D9E3;
 }
