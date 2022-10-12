@@ -1,7 +1,9 @@
-const FIELD_SIZES = {
-	x: 400,
-	y: 400
-}
+import '@/styles/index.scss';
+
+import { createRandomCircle } from './js/createCircle';
+import { FIELD_SIZES } from './js/defaultVars';
+import { getRandomNumber, numberInRange } from './js/calc';
+
 
 const startBtn = document.querySelector('#start')
 const screens = document.querySelectorAll('.screen')
@@ -110,44 +112,7 @@ function finishGame() {
 	clearInterval(scoreInterval)
 }
 
-function createRandomCircle(type) {
-	const circle = document.createElement('div')
-	circle.classList.add('circle')
 
-	const circleSize = type === 'aim' ? getRandomNumber(10, 60) : 40
-	const x = getRandomNumber(0, FIELD_SIZES.x - circleSize)
-	const y = getRandomNumber(0, FIELD_SIZES.y - circleSize)
-
-	circle.style.width = `${circleSize}px`
-	circle.style.height = `${circleSize}px`
-
-	if (type === 'aim') {
-		circle.style.left = `${x}px`
-		circle.style.top = `${y}px`
-	} else if (type === 'tracking') {
-		circle.addEventListener('mouseover', () => {
-			scoreInterval = setInterval(() => {
-				score++
-			}, 100)
-		})
-
-		circle.addEventListener('mouseleave', () => {
-			clearInterval(scoreInterval)
-		})
-	}
-
-	circle.style.background = generateRandomColor()
-	
-	board.append(circle)
-
-	activeCircleSize = circleSize
-
-	return circle
-}
-
-function getRandomNumber(min, max) {
-	return Math.round(Math.random() * (max - min) + min)
-}
 
 function changeScreen(newScreenId) {
 	screens.forEach(screen => screen.classList.remove('active'))
@@ -165,9 +130,7 @@ function restartGame(e) {
 }
 
 // функция рандомной генерации цвета
-function generateRandomColor() {
-	return `rgb(${getRandomNumber(0, 255)}, ${getRandomNumber(0, 255)}, ${getRandomNumber(0, 255)})`	
-}
+
 
 function generateRoadPoints(quantity) {
 	let points = []
@@ -265,10 +228,3 @@ function startCircleAnimation(circle) {
 	}
 }
 
-function numberInRange(min, max, number) {
-	if (number >= min && number <= max) {
-		return true
-	} else {
-		return false
-	}
-}
