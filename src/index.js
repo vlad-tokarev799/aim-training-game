@@ -1,6 +1,6 @@
 import '@/styles/index.scss';
 
-import { createRandomCircle } from './js/createCircle';
+import { RandomCircle } from './js/createCircle';
 import { FIELD_SIZES } from './js/defaultVars';
 import { getRandomNumber, numberInRange } from './js/calc';
 
@@ -53,7 +53,10 @@ board.addEventListener('click', e => {
 		if (e.target.classList.contains('circle')) {
 			e.target.remove()
 			score++
-			createRandomCircle('aim')
+			// createRandomCircle('aim')
+
+			const circle = new RandomCircle({ type: 'aim' });
+			circle.insertInto(board);
 		}
 	}
 })
@@ -69,13 +72,14 @@ function startGame() {
 }
 
 function startTracking() {
-	let circle = createRandomCircle('tracking')
+	let circle = new RandomCircle({ type: 'tracking' })
 
-	startCircleAnimation(circle)
+	startCircleAnimation(circle.node)
 }
 
 function startAim() {
-	createRandomCircle('aim')
+	const circle = new RandomCircle({ type: 'aim' });
+	circle.insertInto(board);
 	setTime(time)
 }
 

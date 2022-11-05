@@ -3,25 +3,52 @@ import { FIELD_SIZES } from './defaultVars';
 
 class RandomCircle {
 
+	#circle = document.createElement('div');
+	size = 0;
+
+	get node() {
+		return this.#circle;
+	}
+
 	constructor(options) {
 
-		this.circle = document.createElement('div');
-		this.circle.classList.add('circle');
+		this.#circle.classList.add('circle');
 
-		this.size = ( options.type === 'aim' ? getRandomNumber(10, 60) : 40 );
-		
-		this.circle.style.width = `${ this.size }px`;
-		this.circle.style.height = `${ this.size }px`;
+		if (options.type === 'aim') {
+			this.size = getRandomNumber(10, 60);
+		} else if (options.type === 'tracking') {
+			this.size = 40;
+		}
 
-		this.position = this.getPosition();
+		this.#setSize();
+
+		this.setPosition();
 		
 	}
 
-	getPosition() {
+	#setSize() {
+		
+		this.#circle.style.width = `${ this.size }px`;
+		this.#circle.style.height = `${ this.size }px`;
+
+	}
+
+	#getPosition() {
 		return {
 			x: getRandomNumber(0, FIELD_SIZES.x - this.size),
 			y: getRandomNumber(0, FIELD_SIZES.y - this.size)
 		}
+	}
+
+	insertInto(parent) {
+		parent.append(this.#circle);
+	}
+
+	setPosition(pos = this.#getPosition) {
+		
+		this.#circle.style.left = pos.x;
+		this.#circle.style.top = pos.y;
+
 	}
 
 }
@@ -38,8 +65,8 @@ function createRandomCircle(type) {
 	// circle.style.height = `${circleSize}px`
 
 	if (type === 'aim') {
-		circle.style.left = `${x}px`
-		circle.style.top = `${y}px`
+		// circle.style.left = `${x}px`
+		// circle.style.top = `${y}px`
 	} else if (type === 'tracking') {
 		circle.addEventListener('mouseover', () => {
 			scoreInterval = setInterval(() => {
@@ -53,12 +80,10 @@ function createRandomCircle(type) {
 	}
 
 	circle.style.background = generateRandomColor()
-	
-	board.append(circle)
 
 	activeCircleSize = circleSize
 
 	return circle
 }
 
-export {createRandomCircle};
+export {RandomCircle};
